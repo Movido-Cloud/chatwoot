@@ -29,12 +29,14 @@ import SecondaryNavItem from './SecondaryNavItem.vue';
 import AccountContext from './AccountContext.vue';
 import { mapGetters } from 'vuex';
 import { FEATURE_FLAGS } from '../../../featureFlags';
+import adminMixin from '../../../mixins/isAdmin';
 
 export default {
   components: {
     AccountContext,
     SecondaryNavItem,
   },
+  mixins: [adminMixin],
   props: {
     accountId: {
       type: Number,
@@ -227,7 +229,10 @@ export default {
       };
     },
     additionalSecondaryMenuItems() {
-      let conversationMenuItems = [this.inboxSection, this.labelSection];
+      let conversationMenuItems = [this.inboxSection];
+      if (this.isAdmin) {
+        conversationMenuItems.push(this.labelSection);
+      }
       let contactMenuItems = [this.contactLabelSection];
       if (this.teams.length) {
         conversationMenuItems = [this.teamSection, ...conversationMenuItems];

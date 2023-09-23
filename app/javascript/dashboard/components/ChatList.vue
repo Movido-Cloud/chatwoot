@@ -208,6 +208,7 @@ import {
 } from '../store/modules/conversations/helpers/actionHelpers';
 import { CONVERSATION_EVENTS } from '../helper/AnalyticsHelper/events';
 import IntersectionObserver from './IntersectionObserver.vue';
+import adminMixin from '../mixins/isAdmin';
 
 export default {
   components: {
@@ -229,6 +230,7 @@ export default {
     alertMixin,
     filterMixin,
     uiSettingsMixin,
+    adminMixin,
   ],
   provide() {
     return {
@@ -363,11 +365,16 @@ export default {
       };
     },
     assigneeTabItems() {
-      const ASSIGNEE_TYPE_TAB_KEYS = {
+      let ASSIGNEE_TYPE_TAB_KEYS = {
         me: 'mineCount',
-        unassigned: 'unAssignedCount',
-        all: 'allCount',
       };
+      if (this.isAdmin) {
+        ASSIGNEE_TYPE_TAB_KEYS = {
+          me: 'mineCount',
+          unassigned: 'unAssignedCount',
+          all: 'allCount',
+        };
+      }
       return Object.keys(ASSIGNEE_TYPE_TAB_KEYS).map(key => {
         const count = this.conversationStats[ASSIGNEE_TYPE_TAB_KEYS[key]] || 0;
         return {
