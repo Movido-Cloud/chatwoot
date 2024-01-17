@@ -47,7 +47,7 @@ export default {
 @tailwind components;
 @tailwind utilities;
 
-@import 'shared/assets/fonts/plus-jakarta';
+//@import 'shared/assets/fonts/plus-jakarta';
 @import 'shared/assets/stylesheets/colors';
 @import 'shared/assets/stylesheets/spacing';
 @import 'shared/assets/stylesheets/font-size';
