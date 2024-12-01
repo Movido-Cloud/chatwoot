@@ -65,6 +65,7 @@ import { CONVERSATION_EVENTS } from '../helper/AnalyticsHelper/events';
 import { ASSIGNEE_TYPE_TAB_PERMISSIONS } from 'dashboard/constants/permissions.js';
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+import { useAdmin } from 'dashboard/composables/useAdmin';
 
 const props = defineProps({
   conversationInbox: { type: [String, Number], default: 0 },
@@ -190,16 +191,24 @@ const userPermissions = computed(() => {
   return getUserPermissions(currentUser.value, currentAccountId.value);
 });
 
+const { isAdmin } = useAdmin();
 const assigneeTabItems = computed(() => {
   return filterItemsByPermission(
     ASSIGNEE_TYPE_TAB_PERMISSIONS,
     userPermissions.value,
     item => item.permissions
-  ).map(({ key, count: countKey }) => ({
-    key,
-    name: t(`CHAT_LIST.ASSIGNEE_TYPE_TABS.${key}`),
-    count: conversationStats.value[countKey] || 0,
-  }));
+  )
+    .filter(item => {
+      if (isAdmin.value) {
+        return true;
+      }
+      return item.key === 'me';
+    })
+    .map(({ key, count: countKey }) => ({
+      key,
+      name: t(`CHAT_LIST.ASSIGNEE_TYPE_TABS.${key}`),
+      count: conversationStats.value[countKey] || 0,
+    }));
 });
 
 const showAssigneeInConversationCard = computed(() => {
@@ -237,7 +246,7 @@ const conversationCustomAttributes = useFunctionGetter(
 const activeAssigneeTabCount = computed(() => {
   const count = assigneeTabItems.value.find(
     item => item.key === activeAssigneeTab.value
-  ).count;
+  )?.count ?? 0;
   return count;
 });
 

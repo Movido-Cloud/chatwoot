@@ -31,7 +31,7 @@ const imgResizeManager = md => {
 };
 
 const md = MarkdownIt({
-  html: false,
+  html: true,
   xhtmlOut: true,
   breaks: true,
   langPrefix: 'language-',
