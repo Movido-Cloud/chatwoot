@@ -4,22 +4,20 @@ class ChatwootMarkdownRenderer
   end
 
   def render_message
-    markdown_renderer = BaseMarkdownRenderer.new
-    doc = CommonMarker.render_doc(@content, :DEFAULT)
-    html = markdown_renderer.render(doc)
-    render_as_html_safe(html)
+    html = CommonMarker.render_html(@content, [:UNSAFE])
+    doc = CommonMarker.render_doc(html, [:UNSAFE])
+    render_as_html_safe(doc.to_html(:UNSAFE))
   end
 
   def render_article
     markdown_renderer = CustomMarkdownRenderer.new
-    doc = CommonMarker.render_doc(@content, :DEFAULT, [:table])
-    html = markdown_renderer.render(doc)
-
+    doc = CommonMarker.render_doc(@content, [:UNSAFE], [:table])
+    html = markdown_renderer.render(doc.to_html)
     render_as_html_safe(html)
   end
 
   def render_markdown_to_plain_text
-    CommonMarker.render_doc(@content, :DEFAULT).to_plaintext
+    CommonMarker.render_doc(@content, [:UNSAFE]).to_plaintext
   end
 
   private
